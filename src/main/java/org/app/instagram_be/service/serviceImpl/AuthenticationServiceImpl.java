@@ -19,16 +19,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public Optional<Account> getAccountByUserInputAndPassword(String userInput, String password) {
-        Optional<Account> account = Optional.empty();
-        account = accountRepository.findByUserNameAndPassword(userInput, password);
+        Optional<Account> account = accountRepository.findAccountByUserInput(userInput, password);
         if (account.isEmpty()) {
-            account = accountRepository.findByUserEmailAndPassword(userInput, password);
-            if (account.isEmpty()) {
-                account = accountRepository.findByUserPhoneNumberAndPassword(userInput, password);
-                if (account.isEmpty()) {
-                    throw new UsernameNotFoundException("User not found");
-                }
-            }
+            throw new UsernameNotFoundException("User not found");
         }
         return account;
     }
