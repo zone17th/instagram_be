@@ -17,7 +17,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public Optional<Account> getAccountByEmailAndPassword(String email, String password) {
-        return accountRepository.findByEmailAndPassword(email, password);
+    public Optional<Account> getAccountByUserNameAndPassword(String username, String password) {
+        return accountRepository.findByUserNameAndPassword(username, password);
     }
 }

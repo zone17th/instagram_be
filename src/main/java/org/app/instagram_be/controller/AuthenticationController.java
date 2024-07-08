@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -22,7 +22,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     private ResponseEntity<?> login(@RequestBody @Valid LoginDTO loginDTO) {
-        Optional<Account> account = authenticationService.getAccountByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
+        Optional<Account> account = authenticationService.getAccountByUserNameAndPassword(loginDTO.getUsername(), loginDTO.getPassword());
         if (account.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Can not get account");
         }

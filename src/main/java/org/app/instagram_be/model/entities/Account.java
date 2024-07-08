@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.app.instagram_be.model.entities.enums.UserRoleEnum;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -12,8 +13,14 @@ import lombok.ToString;
 public class Account extends BaseEntity {
 
     @Column(nullable = false)
-    private String email;
+    private String userName;
 
     @Column(nullable = false)
     private String password;
+
+    @Column
+    private UserRoleEnum role;
+
+    @OneToOne(mappedBy = "account")
+    private User user;
 }

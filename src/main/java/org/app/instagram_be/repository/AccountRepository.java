@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends BaseRepository<Account, Long>{
-    Optional<Account> findByEmailAndPassword(String email, String password);
+    Optional<Account> findByUserNameAndPassword(String username, String password);
 }
