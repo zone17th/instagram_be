@@ -22,7 +22,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     private ResponseEntity<?> login(@RequestBody @Valid LoginDTO loginDTO) {
-        Optional<Account> account = authenticationService.getAccountByUserNameAndPassword(loginDTO.getUsername(), loginDTO.getPassword());
+        Optional<Account> account = authenticationService.getAccountByUserInputAndPassword(loginDTO.getUserInput(), loginDTO.getPassword());
         if (account.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Can not get account");
         }
