@@ -15,10 +15,17 @@ public interface AccountRepository extends BaseRepository<Account, Long> {
 
     Optional<Account> findByUserPhoneNumberAndPassword(String phoneNumber, String password);
 
+    //    find account by username/email/phone number and password
     @Query(
             "SELECT a FROM Account a JOIN a.user u where (a.userName = :userInput or u.email = :userInput or u.phoneNumber = :userInput) and a.password = :password"
     )
-    Optional<Account> findAccountByUserInput(@Param("userInput") String userInput, @Param("password") String password);
+    Optional<Account> findAccountByUserInputAndPassword(@Param("userInput") String userInput, @Param("password") String password);
+
+    //    find account by username/email/phone number
+    @Query(
+            "SELECT a FROM Account a JOIN a.user u where (a.userName = :userInput or u.email = :userInput or u.phoneNumber = :userInput)"
+    )
+    Optional<Account> findAccountByUserInput(@Param("userInput") String userInput);
 
 
 }

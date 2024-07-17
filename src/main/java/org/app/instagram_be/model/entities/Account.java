@@ -19,6 +19,7 @@ public class Account extends BaseEntity {
     private String password;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private UserRoleEnum role;
 
     @OneToOne(mappedBy = "account")
