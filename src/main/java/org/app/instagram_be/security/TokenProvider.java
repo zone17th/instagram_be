@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,14 +27,15 @@ import java.util.stream.Collectors;
 
 @Component
 public class TokenProvider {
-//    secret key for jwt
+    //    secret key for jwt
     private final static String SECRET_KEY = "qwefjsahshscdkxcvl432";
+    private final static Logger LOGGER = LoggerFactory.getLogger(TokenProvider.class);
 
     public String generateAccessToken(Authentication authentication) {
         String role = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         LocalDateTime expireTime = LocalDateTime.now().plusSeconds(30);
         return Jwts.builder()
-                .claim("role",role)
+                .claim("role", role)
                 .subject(authentication.getName())
                 .expiration(Date.from(expireTime.atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(getSecretKey())
@@ -50,15 +53,28 @@ public class TokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
         List<GrantedAuthority> roles = Arrays.stream(claims.get("roles").toString().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        User user = new User(claims.getSubject(),"",roles);
-        return new UsernamePasswordAuthenticationToken(user,null,roles);
+        User user = new User(claims.getSubject(), "", roles);
+        return new UsernamePasswordAuthenticationToken(user, null, roles);
     }
 
     // get secret key
     public SecretKey getSecretKey() {
-        byte[] bytes = Base64.getDecoder()
-                .decode(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-        return new SecretKeySpec(bytes, "HmacSHA512");
+        byte[] bytes = generateSecretKeyString(SECRET_KEY).getBytes(StandardCharsets.UTF_8);
+        try {
+            return new SecretKeySpec(bytes, "HmacSHA256");
+        } catch (Exception e) {
+            LOGGER.error("Fail: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // generate secret key string
+    public String generateSecretKeyString(String key) {
+        StringBuilder builder = new StringBuilder(key);
+        while (builder.toString().getBytes().length < 32) {
+            builder.append(key.charAt(key.length()-1));
+        }
+        return builder.toString();
     }
 
 }

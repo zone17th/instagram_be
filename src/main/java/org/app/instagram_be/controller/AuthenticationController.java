@@ -23,11 +23,11 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     private ResponseEntity<?> login(@RequestBody @Valid LoginDTO loginDTO) {
-        Optional<Account> account = authenticationService.getAccountByUserInputAndPassword(loginDTO.getUserInput(), loginDTO.getPassword());
+        Optional<Account> account = authenticationService.getAccountByUserInput(loginDTO.getUserInput());
         if (account.isPresent()) {
             LoginResponseDTO loginResponseDTO = authenticationService.login(loginDTO);
             if (loginResponseDTO!=null) {
-                return ResponseEntity.ok(loginDTO);
+                return ResponseEntity.ok(loginResponseDTO);
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Can't login");

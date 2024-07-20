@@ -19,7 +19,7 @@ public interface AccountRepository extends BaseRepository<Account, Long> {
     @Query(
             "SELECT a FROM Account a JOIN a.user u where (a.userName = :userInput or u.email = :userInput or u.phoneNumber = :userInput) and a.password = :password"
     )
-    Optional<Account> findAccountByUserInputAndPassword(@Param("userInput") String userInput, @Param("password") String password);
+    Optional<Account> findAccountByUserInput(@Param("userInput") String userInput, @Param("password") String password);
 
     //    find account by username/email/phone number
     @Query(

@@ -1,5 +1,6 @@
 package org.app.instagram_be.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,5 +24,6 @@ public class Account extends BaseEntity {
     private UserRoleEnum role;
 
     @OneToOne(mappedBy = "account")
+    @ToString.Exclude
     private User user;
 }
