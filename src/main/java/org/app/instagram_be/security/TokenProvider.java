@@ -16,20 +16,21 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
 public class TokenProvider {
     //    secret key for jwt
-    private final static String SECRET_KEY = "qwefjsahshscdkxcvl432";
+    private final static String SECRET_KEY = "SecretkeYformYApplication2024";
     private final static Logger LOGGER = LoggerFactory.getLogger(TokenProvider.class);
+    private final static Random RANDOM = new SecureRandom();
 
     public String generateAccessToken(Authentication authentication) {
         String role = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
@@ -72,8 +73,10 @@ public class TokenProvider {
     public String generateSecretKeyString(String key) {
         StringBuilder builder = new StringBuilder(key);
         while (builder.toString().getBytes().length < 32) {
-            builder.append(key.charAt(key.length()-1));
+            int index = RANDOM.nextInt(key.length());
+            builder.append(key.charAt(index));
         }
+        System.out.println("Secret Key: " + builder.toString());
         return builder.toString();
     }
 
