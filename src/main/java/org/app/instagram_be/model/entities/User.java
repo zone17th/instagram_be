@@ -1,10 +1,11 @@
 package org.app.instagram_be.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.app.instagram_be.security.oauth2Config.user.enums.AuthProvider;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +32,14 @@ public class User extends BaseEntity {
     private Integer followers;
     @Column
     private Integer following;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider;
+    private String providerId;
+    private String imageUrl;
+    @Column
+    @NotNull
+    private boolean emailVerified = false;
     @OneToOne
     @JsonIgnore
     private Account account;
