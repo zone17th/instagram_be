@@ -34,7 +34,8 @@ public class TokenProvider {
 
     public String generateAccessToken(Authentication authentication) {
         String role = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
-        LocalDateTime expireTime = LocalDateTime.now().plusSeconds(30);
+        LocalDateTime expireTime = LocalDateTime.now().plusSeconds(3600);
+        System.out.println("Test: " + getSecretKey());
         return Jwts.builder()
                 .claim("role", role)
                 .subject(authentication.getName())
@@ -48,12 +49,13 @@ public class TokenProvider {
         if (token.isEmpty()) {
             return null;
         }
+        System.out.println("test2: " + getSecretKey());
         Claims claims = Jwts.parser()
                 .verifyWith(getSecretKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        List<GrantedAuthority> roles = Arrays.stream(claims.get("roles").toString().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        List<GrantedAuthority> roles = Arrays.stream(claims.get("role").toString().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
         User user = new User(claims.getSubject(), "", roles);
         return new UsernamePasswordAuthenticationToken(user, null, roles);
     }
@@ -73,8 +75,7 @@ public class TokenProvider {
     public String generateSecretKeyString(String key) {
         StringBuilder builder = new StringBuilder(key);
         while (builder.toString().getBytes().length < 32) {
-            int index = RANDOM.nextInt(key.length());
-            builder.append(key.charAt(index));
+            builder.append(key.charAt(key.length()-1));
         }
         System.out.println("Secret Key: " + builder.toString());
         return builder.toString();

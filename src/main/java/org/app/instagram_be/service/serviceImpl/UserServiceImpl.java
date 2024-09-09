@@ -27,4 +27,9 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+
+    @Override
+    public Optional<User> findByID(long id) {
+        return userRepository.findUserById(id);
+    }
 }
